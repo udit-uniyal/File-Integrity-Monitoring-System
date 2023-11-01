@@ -10,37 +10,30 @@ env:
   CSPM_URL: "cspm.demo.accuknox.com"
   CSPM_TOKEN: "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjk5NjEwNzA1LCJqdGkiOiJlYTBmNjZiYzI2OTk0Y2RmOWU1YjJjYzBkZjUyOGI2NSIsImlzcyI6ImNzcG0uZGVtby5hY2N1a25veC5jb20ifQ.en8Hgjs5UyUwYYxrJrw6wNcEzLWomDxukk5cpP1iZkseBH4_Hz04AEov0wui9Ak8cNM7gQemBLhfO9YO7VDWq2-qALqe_wR_cW--S1pkrRNpPCDXgcQZy73YnEyYNH7GE8z2aOl_Ak62J5xYFZQPI3enWaSDCXLPXYAwcJnVDXx2pySi3rKDSNL71olf8SdC4JjP4wQ1OPTuI9W-iDqATe3hO-PnTqUxADjulSyvE5n0pm3f9pQ_Y6XOtKgAGVmDNT3UaAzhGWsb5uJu7-PdMflXDLmRJN_iQadk9c7p1Z8qy5jEjDIJU2z_sER0gtZVvQctobXxyECeHx858ikdfw"
   TENANT_ID: "11"
-​
-jobs:
-  accuknox-cicd:
-    runs-on: ubuntu-latest
-    steps:
-      - name: checkoutcode
-        uses: actions/checkout
-
 ﻿
 jobs:
   accuknox-cicd:
     runs-on: ubuntu-latest
     steps:
-    - name: Check out code
+      - name: Check out code
+        uses: actions/checkout@v2
 I
-    uses: actions/checkout@v2
-    - name: Docker Build
-      run: |
-        docker build -t ${{ env.DOCKER_IMAGE }} -f ${{ env.DOCKERFILE_CONTEXT}}
+      uses: actions/checkout@v2
+      - name: Docker Build
+        run: |
+          docker build -t ${{ env.DOCKER_IMAGE }} -f ${{ env.DOCKERFILE_CONTEXT}}
         
-    - name: Download Trivy Vulnerability Scanner
-      run: |
-        curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
+      - name: Download Trivy Vulnerability Scanner
+        run: |
+          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
         
-    - name: Run Trivy Vulnerability Scanner
-      run: |
-        trivy image -f json ${{ env.DOCKER_IMAGE }} -o results.json
+      - name: Run Trivy Vulnerability Scanner
+        run: |
+          trivy image -f json ${{ env.DOCKER_IMAGE }} -o results.json
         
-    - name: Print Trivy Results
-      run: cat results.json
+      - name: Print Trivy Results
+        run: cat results.json
         
-    - name: Push report to CSPM panel
-      run: |
-        curl --location--request POST 'https://${{env.CSPM_URL}}/api/v1/artifact/?tenant_id=${{ env.TENANT_ID }}&data_type=TR&save_to_s3=false' --header 'Authorization: Bearer ${{ env.CSPM_TOKEN }}' --form 'file=@"./results.json"'
+      - name: Push report to CSPM panel
+        run: |
+          curl --location--request POST 'https://${{env.CSPM_URL}}/api/v1/artifact/?tenant_id=${{ env.TENANT_ID }}&data_type=TR&save_to_s3=false' --header 'Authorization: Bearer ${{ env.CSPM_TOKEN }}' --form 'file=@"./results.json"'

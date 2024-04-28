@@ -17,7 +17,7 @@ jobs:
       - uses: sonarsource/sonarqube-scan-action@master
         env:
           SONAR_TOKEN: sqp_ba2fa24b24e8fedd7536a7be84086e25f5c78a39
-          SONAR_HOST_URL: https://odd-llamas-yawn.loca.lt
+          SONAR_HOST_URL: https://pzfszq.tunnel.pyjam.as/
       # If you wish to fail your job when the Quality Gate is red, uncomment the
       # following lines. This would typically be used to fail a deployment.
       # - uses: sonarsource/sonarqube-quality-gate-action@master
